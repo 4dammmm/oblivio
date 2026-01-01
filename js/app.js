@@ -141,6 +141,7 @@ document.addEventListener('DOMContentLoaded', function () {
         </div>
       `;
 
+      // movie.id = tmdbId del film cliccato
       movieCard.addEventListener('click', () => showMovieDetails(movie.id));
       moviesGrid.appendChild(movieCard);
     });
@@ -160,12 +161,18 @@ document.addEventListener('DOMContentLoaded', function () {
         videos.find(v => v.site === 'YouTube' && v.type === 'Teaser') ||
         videos.find(v => v.site === 'YouTube');
 
+      // Link TMDB del film
       const tmdbLink = `https://www.themoviedb.org/movie/${movie.id}`;
+
+      // ✅ ricavo tmdbId dalla URL TMDB (come richiesto)
+      // es: https://www.themoviedb.org/movie/12345  -> 12345
+      const tmdbId = (tmdbLink.match(/\/movie\/(\d+)/)?.[1]) || String(movie.id || movieId);
+
+      // ✅ link PLAY richiesto
+      const vixLink = `https://vixsrc.to/movie/${tmdbId}`;
+
       const imdbId = movie.external_ids?.imdb_id;
       const imdbLink = imdbId ? `https://www.imdb.com/title/${imdbId}/` : null;
-
-      // ✅ PLAY link richiesto
-      const vixLink = `https://vixsrc.to/movie/${movie.id}`;
 
       detailsDiv.innerHTML = `
         <div class="movie-detail-header">
@@ -191,8 +198,8 @@ document.addEventListener('DOMContentLoaded', function () {
           <p>${escapeHtml(movie.overview || 'Nessuna descrizione disponibile.')}</p>
 
           <div class="actions">
-            <!-- ✅ Bottone PLAY che porta a vixsrc.to/movie/{tmdbId} -->
-            <a class="watch-btn play-btn" href="${vixLink}" target="_blank" rel="noopener">▶ Play</a>
+            <!-- ✅ Bottone PLAY nel popup: https://vixsrc.to/movie/{tmdbId} -->
+            <a class="watch-btn play-btn" href="${vixLink}" target="_blank" rel="noopener">Play</a>
 
             <a class="watch-btn" href="${tmdbLink}" target="_blank" rel="noopener">TMDB</a>
             ${imdbLink ? `<a class="watch-btn" href="${imdbLink}" target="_blank" rel="noopener">IMDb</a>` : ''}
