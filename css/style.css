@@ -1423,3 +1423,75 @@ body {
     gap: 10px;
   }
 }
+/* ===== StreamingUnity-ish Header polish ===== */
+:root{
+  --bg: #0b0f14;
+  --panel: rgba(15, 18, 24, .72);
+  --panel2: rgba(15, 18, 24, .88);
+  --stroke: rgba(255,255,255,.08);
+  --stroke2: rgba(255,255,255,.14);
+  --text: rgba(255,255,255,.92);
+  --muted: rgba(255,255,255,.68);
+  --accent: #00c2ff; /* puoi cambiarlo */
+}
+
+body.dark-theme{
+  background: radial-gradient(1200px 600px at 20% -10%, rgba(0,194,255,.14), transparent 55%),
+              radial-gradient(900px 500px at 80% 0%, rgba(229,9,20,.12), transparent 60%),
+              var(--bg);
+  color: var(--text);
+}
+
+.dark-theme .netflix-header{
+  background: linear-gradient(to bottom, var(--panel2), var(--panel));
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+  border-bottom: 1px solid var(--stroke);
+}
+
+.logo{
+  letter-spacing: 2px;
+  font-weight: 800;
+}
+.logo-icon{ opacity: .9; }
+
+.main-nav a{
+  color: var(--muted);
+  font-weight: 600;
+  font-size: 14px;
+  padding: 10px 12px;
+  border-radius: 10px;
+  transition: transform .18s ease, background .18s ease, color .18s ease;
+}
+.main-nav a:hover{
+  background: rgba(255,255,255,.06);
+  color: var(--text);
+  transform: translateY(-1px);
+}
+.main-nav a.active{
+  background: rgba(0,194,255,.14);
+  color: var(--text);
+  border: 1px solid rgba(0,194,255,.22);
+}
+
+.search-box input{
+  background: rgba(255,255,255,.06);
+  border: 1px solid var(--stroke);
+  border-radius: 12px;
+  color: var(--text);
+}
+.search-box input:focus{
+  outline: none;
+  border-color: rgba(0,194,255,.35);
+  box-shadow: 0 0 0 4px rgba(0,194,255,.10);
+}
+
+.theme-toggle, .user-btn{
+  border-radius: 12px;
+  border: 1px solid var(--stroke);
+  background: rgba(255,255,255,.06);
+}
+.theme-toggle:hover, .user-btn:hover{
+  border-color: var(--stroke2);
+  background: rgba(255,255,255,.09);
+}
