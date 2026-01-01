@@ -3,28 +3,31 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>I miei film - Netflix Style</title>
+    <title>Oblivion - Film in Streaming</title>
     <link rel="stylesheet" href="css/style.css" />
     <link rel="preconnect" href="https://image.tmdb.org" />
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   </head>
 
   <body>
-    <!-- Header fisso -->
-    <header class="netflix-header">
-      <div class="nav-left">
-        <h1 class="logo">NETFLIX</h1>
-        <nav>
-          <a href="#" class="active" data-category="trending">Home</a>
-          <a href="#" data-category="popular">Film Popolari</a>
-          <a href="#" data-category="top_rated">Top Rated</a>
-        </nav>
-      </div>
-      
-      <div class="nav-right">
-        <div class="search-box">
-          <input id="searchInput" type="text" placeholder="Cerca film..." autocomplete="off">
-          <button id="searchBtn" class="search-btn"><i class="fas fa-search"></i></button>
+    <!-- Header trasparente con blur -->
+    <header class="oblivion-header" id="mainHeader">
+      <div class="header-blur"></div>
+      <div class="header-content">
+        <div class="nav-left">
+          <h1 class="logo">OBLIVION</h1>
+          <nav>
+            <a href="#" class="active" data-category="trending" id="homeLink">
+              <i class="fas fa-home"></i> Home
+            </a>
+          </nav>
+        </div>
+        
+        <div class="nav-right">
+          <div class="search-box">
+            <input id="searchInput" type="text" placeholder="Cerca film..." autocomplete="off">
+            <button id="searchBtn" class="search-btn"><i class="fas fa-search"></i></button>
+          </div>
         </div>
       </div>
     </header>
@@ -47,26 +50,40 @@
       <div class="rows">
         <!-- Trending Row -->
         <section class="row" id="trendingRow">
-          <h2>In Trend</h2>
-          <div class="scroller" id="trendingScroller"></div>
-        </section>
-
-        <!-- Popular Row -->
-        <section class="row" id="popularRow">
-          <h2>Popolari su Netflix</h2>
-          <div class="scroller" id="popularScroller"></div>
-        </section>
-
-        <!-- Top Rated Row -->
-        <section class="row" id="topRatedRow">
-          <h2>Più Votati</h2>
-          <div class="scroller" id="topRatedScroller"></div>
+          <div class="row-header">
+            <h2>In Trend</h2>
+            <div class="row-indicators">
+              <span class="row-counter">1/10</span>
+            </div>
+          </div>
+          <div class="scroller-container">
+            <button class="scroll-btn scroll-left" aria-label="Scorri a sinistra">
+              <i class="fas fa-chevron-left"></i>
+            </button>
+            <div class="scroller" id="trendingScroller"></div>
+            <button class="scroll-btn scroll-right" aria-label="Scorri a destra">
+              <i class="fas fa-chevron-right"></i>
+            </button>
+          </div>
         </section>
 
         <!-- Search Results (hidden by default) -->
         <section class="row" id="searchResultsRow" style="display: none;">
-          <h2 id="searchResultsTitle">Risultati della ricerca</h2>
-          <div class="scroller" id="searchResultsScroller"></div>
+          <div class="row-header">
+            <h2 id="searchResultsTitle">Risultati della ricerca</h2>
+            <div class="row-indicators">
+              <span class="row-counter">1/5</span>
+            </div>
+          </div>
+          <div class="scroller-container">
+            <button class="scroll-btn scroll-left" aria-label="Scorri a sinistra">
+              <i class="fas fa-chevron-left"></i>
+            </button>
+            <div class="scroller" id="searchResultsScroller"></div>
+            <button class="scroll-btn scroll-right" aria-label="Scorri a destra">
+              <i class="fas fa-chevron-right"></i>
+            </button>
+          </div>
         </section>
       </div>
     </main>
