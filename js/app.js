@@ -1,6 +1,5 @@
-// js/app.js
 document.addEventListener('DOMContentLoaded', function () {
-  const moviesGrid = document.getElementById('moviesGrid');
+  const rowsContainer = document.getElementById('moviesGrid');
   const searchInput = document.getElementById('searchInput');
   const searchBtn = document.getElementById('searchBtn');
   const navBtns = document.querySelectorAll('.nav-btn');
@@ -8,11 +7,11 @@ document.addEventListener('DOMContentLoaded', function () {
   const closeModal = document.querySelector('.close');
   const statusBar = document.getElementById('statusBar');
 
-  let currentMode = 'trending';
+  let currentMode = 'home';
   let lastQuery = '';
 
   // Init
-  loadTrendingMovies();
+  loadHome();
 
   // Search
   searchBtn.addEventListener('click', performSearch);
@@ -30,9 +29,10 @@ document.addEventListener('DOMContentLoaded', function () {
       lastQuery = '';
       searchInput.value = '';
 
-      if (currentMode === 'trending') loadTrendingMovies();
-      if (currentMode === 'popular') loadPopularMovies();
-      if (currentMode === 'top_rated') loadTopRatedMovies();
+      if (currentMode === 'home') loadHome();
+      if (currentMode === 'trending') loadSingleRow('Trending', () => fetchTrendingMovies());
+      if (currentMode === 'popular') loadSingleRow('Popolari', () => fetchPopularMovies(1));
+      if (currentMode === 'top_rated') loadSingleRow('Top Rated', () => fetchTopRatedMovies(1));
     });
   });
 
@@ -49,48 +49,98 @@ document.addEventListener('DOMContentLoaded', function () {
   function hideModal() {
     movieModal.style.display = 'none';
     movieModal.setAttribute('aria-hidden', 'true');
-
-    // stop trailer if open
     const player = document.getElementById('trailerPlayer');
     if (player) player.src = '';
   }
 
-  async function loadTrendingMovies() {
+  function clearRows() {
+    rowsContainer.innerHTML = '';
+  }
+
+  function createRow(title, hintText = '') {
+    const row = document.createElement('section');
+    row.className = 'row';
+
+    row.innerHTML = `
+      <div class="row-title">
+        <h2>${escapeHtml(title)}</h2>
+        ${hintText ? `<span class="hint">${escapeHtml(hintText)}</span>` : ''}
+      </div>
+      <div class="scroller" aria-label="${escapeHtml(title)}"></div>
+    `;
+
+    rowsContainer.appendChild(row);
+    return row.querySelector('.scroller');
+  }
+
+  function renderCards(scrollerEl, movies) {
+    scrollerEl.innerHTML = '';
+
+    const filtered = (movies || []).filter(m => m && m.poster_path);
+    if (!filtered.length) {
+      const empty = document.createElement('div');
+      empty.style.padding = '16px';
+      empty.style.color = 'rgba(229,231,235,.75)';
+      empty.textContent = 'Nessun film trovato.';
+      scrollerEl.appendChild(empty);
+      return;
+    }
+
+    filtered.forEach(movie => {
+      const card = document.createElement('div');
+      card.className = 'movie-card';
+      card.innerHTML = `
+        <img class="movie-poster"
+             src="${TMDB_IMAGE_BASE}${movie.poster_path}"
+             alt="${escapeHtml(movie.title || '')}"
+             onerror="this.src='images/placeholder.jpg'">
+        <div class="movie-info">
+          <h3 class="movie-title">${escapeHtml(movie.title || 'Titolo N/A')}</h3>
+          <p class="movie-year">${movie.release_date?.split('-')[0] || 'N/A'}</p>
+        </div>
+      `;
+      card.addEventListener('click', () => showMovieDetails(movie.id));
+      scrollerEl.appendChild(card);
+    });
+  }
+
+  async function loadHome() {
     try {
-      setStatus('Caricamento trending...');
-      const data = await fetchTrendingMovies();
-      displayMovies(data?.results || []);
-      setStatus('Trending aggiornati.');
+      clearRows();
+      setStatus('Caricamento home...');
+
+      const [trending, popular, topRated] = await Promise.all([
+        fetchTrendingMovies(),
+        fetchPopularMovies(1),
+        fetchTopRatedMovies(1),
+      ]);
+
+      renderCards(createRow('Trending', 'Settimana'), trending?.results || []);
+      renderCards(createRow('Popolari', 'Oggi'), popular?.results || []);
+      renderCards(createRow('Top Rated', 'I migliori votati'), topRated?.results || []);
+
+      setStatus('');
     } catch (e) {
       console.error(e);
-      setStatus('Errore nel caricamento dei trending.');
-      displayMovies([]);
+      setStatus('Errore nel caricamento della home.');
+      clearRows();
+      const sc = createRow('Errore');
+      renderCards(sc, []);
     }
   }
 
-  async function loadPopularMovies() {
+  async function loadSingleRow(title, fetcher) {
     try {
-      setStatus('Caricamento popolari...');
-      const data = await fetchPopularMovies(1);
-      displayMovies(data?.results || []);
-      setStatus('Popolari aggiornati.');
+      clearRows();
+      setStatus(`Caricamento ${title.toLowerCase()}...`);
+      const data = await fetcher();
+      renderCards(createRow(title), data?.results || []);
+      setStatus('');
     } catch (e) {
       console.error(e);
-      setStatus('Errore nel caricamento dei popolari.');
-      displayMovies([]);
-    }
-  }
-
-  async function loadTopRatedMovies() {
-    try {
-      setStatus('Caricamento top rated...');
-      const data = await fetchTopRatedMovies(1);
-      displayMovies(data?.results || []);
-      setStatus('Top rated aggiornati.');
-    } catch (e) {
-      console.error(e);
-      setStatus('Errore nel caricamento dei top rated.');
-      displayMovies([]);
+      setStatus(`Errore nel caricamento di ${title.toLowerCase()}.`);
+      clearRows();
+      renderCards(createRow(title), []);
     }
   }
 
@@ -103,48 +153,16 @@ document.addEventListener('DOMContentLoaded', function () {
       currentMode = 'search';
       lastQuery = query;
 
+      clearRows();
       const data = await searchMovies(query, 1);
-      displayMovies(data?.results || []);
-      setStatus(`Risultati per: "${query}".`);
+      renderCards(createRow(`Risultati per: "${query}"`), data?.results || []);
+      setStatus('');
     } catch (e) {
       console.error(e);
       setStatus('Errore durante la ricerca.');
-      displayMovies([]);
+      clearRows();
+      renderCards(createRow('Risultati'), []);
     }
-  }
-
-  function displayMovies(movies) {
-    moviesGrid.innerHTML = '';
-
-    if (!movies.length) {
-      moviesGrid.innerHTML = `
-        <div style="grid-column:1/-1; padding:18px; color:rgba(229,231,235,.75); border:1px dashed rgba(255,255,255,.16); border-radius:16px;">
-          Nessun film trovato.
-        </div>
-      `;
-      return;
-    }
-
-    movies.forEach(movie => {
-      if (!movie.poster_path) return;
-
-      const movieCard = document.createElement('div');
-      movieCard.className = 'movie-card';
-      movieCard.innerHTML = `
-        <img src="${TMDB_IMAGE_BASE}${movie.poster_path}"
-             alt="${escapeHtml(movie.title || '')}"
-             class="movie-poster"
-             onerror="this.src='images/placeholder.jpg'">
-        <div class="movie-info">
-          <h3 class="movie-title">${escapeHtml(movie.title || 'Titolo N/A')}</h3>
-          <p class="movie-year">${movie.release_date?.split('-')[0] || 'N/A'}</p>
-        </div>
-      `;
-
-      // movie.id = tmdbId del film cliccato
-      movieCard.addEventListener('click', () => showMovieDetails(movie.id));
-      moviesGrid.appendChild(movieCard);
-    });
   }
 
   async function showMovieDetails(movieId) {
@@ -161,14 +179,8 @@ document.addEventListener('DOMContentLoaded', function () {
         videos.find(v => v.site === 'YouTube' && v.type === 'Teaser') ||
         videos.find(v => v.site === 'YouTube');
 
-      // Link TMDB del film
       const tmdbLink = `https://www.themoviedb.org/movie/${movie.id}`;
-
-      // ✅ ricavo tmdbId dalla URL TMDB (come richiesto)
-      // es: https://www.themoviedb.org/movie/12345  -> 12345
       const tmdbId = (tmdbLink.match(/\/movie\/(\d+)/)?.[1]) || String(movie.id || movieId);
-
-      // ✅ link PLAY richiesto
       const vixLink = `https://vixsrc.to/movie/${tmdbId}`;
 
       const imdbId = movie.external_ids?.imdb_id;
@@ -198,9 +210,7 @@ document.addEventListener('DOMContentLoaded', function () {
           <p>${escapeHtml(movie.overview || 'Nessuna descrizione disponibile.')}</p>
 
           <div class="actions">
-            <!-- ✅ Bottone PLAY nel popup: https://vixsrc.to/movie/{tmdbId} -->
             <a class="watch-btn play-btn" href="${vixLink}" target="_blank" rel="noopener">Play</a>
-
             <a class="watch-btn" href="${tmdbLink}" target="_blank" rel="noopener">TMDB</a>
             ${imdbLink ? `<a class="watch-btn" href="${imdbLink}" target="_blank" rel="noopener">IMDb</a>` : ''}
             ${trailer ? `
@@ -228,7 +238,6 @@ document.addEventListener('DOMContentLoaded', function () {
     }
   }
 
-  // globale per click inline del bottone trailer
   window.playTrailer = function (youtubeKey) {
     const container = document.getElementById('trailerContainer');
     const player = document.getElementById('trailerPlayer');
