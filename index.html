@@ -1,61 +1,92 @@
-<!-- index.html -->
 <!doctype html>
 <html lang="it">
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>I miei film</title>
-
+    <title>I miei film - Netflix Style</title>
     <link rel="stylesheet" href="css/style.css" />
     <link rel="preconnect" href="https://image.tmdb.org" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   </head>
 
   <body>
-    <header class="header">
-      <div class="container header-row">
-        <h1 class="logo">I miei film</h1>
-
-        <div class="search">
-          <input
-            id="searchInput"
-            type="text"
-            placeholder="Cerca un film..."
-            autocomplete="off"
-          />
-          <button id="searchBtn" type="button">Cerca</button>
+    <!-- Header fisso -->
+    <header class="netflix-header">
+      <div class="nav-left">
+        <h1 class="logo">NETFLIX</h1>
+        <nav>
+          <a href="#" class="active" data-category="trending">Home</a>
+          <a href="#" data-category="popular">Film Popolari</a>
+          <a href="#" data-category="top_rated">Top Rated</a>
+        </nav>
+      </div>
+      
+      <div class="nav-right">
+        <div class="search-box">
+          <input id="searchInput" type="text" placeholder="Cerca film..." autocomplete="off">
+          <button id="searchBtn" class="search-btn"><i class="fas fa-search"></i></button>
         </div>
       </div>
-
-      <nav class="nav container" aria-label="Categorie">
-        <button class="nav-btn active" data-category="trending" type="button">
-          Trending
-        </button>
-        <button class="nav-btn" data-category="popular" type="button">
-          Popolari
-        </button>
-        <button class="nav-btn" data-category="top_rated" type="button">
-          Top Rated
-        </button>
-      </nav>
     </header>
 
-    <main class="container">
-      <div id="statusBar" class="status" aria-live="polite"></div>
-      <section id="moviesGrid" class="grid" aria-label="Lista film"></section>
+    <!-- Hero Section -->
+    <section class="hero" id="heroSection">
+      <div class="hero-content">
+        <h1 id="heroTitle">Film in Trend</h1>
+        <p id="heroDescription">Scopri i film più popolari del momento. Guarda trailer, leggi trame e trova dove guardarli.</p>
+        <div class="hero-buttons">
+          <button class="btn btn-play"><i class="fas fa-play"></i> Riproduci</button>
+          <button class="btn btn-info"><i class="fas fa-info-circle"></i> Altre info</button>
+        </div>
+      </div>
+    </section>
+
+    <!-- Main Content -->
+    <main>
+      <!-- Rows Container -->
+      <div class="rows">
+        <!-- Trending Row -->
+        <section class="row" id="trendingRow">
+          <h2>In Trend</h2>
+          <div class="scroller" id="trendingScroller"></div>
+        </section>
+
+        <!-- Popular Row -->
+        <section class="row" id="popularRow">
+          <h2>Popolari su Netflix</h2>
+          <div class="scroller" id="popularScroller"></div>
+        </section>
+
+        <!-- Top Rated Row -->
+        <section class="row" id="topRatedRow">
+          <h2>Più Votati</h2>
+          <div class="scroller" id="topRatedScroller"></div>
+        </section>
+
+        <!-- Search Results (hidden by default) -->
+        <section class="row" id="searchResultsRow" style="display: none;">
+          <h2 id="searchResultsTitle">Risultati della ricerca</h2>
+          <div class="scroller" id="searchResultsScroller"></div>
+        </section>
+      </div>
     </main>
 
     <!-- MODAL -->
-    <div
-      id="movieModal"
-      class="modal"
-      aria-hidden="true"
-      role="dialog"
-      aria-label="Dettagli film"
-    >
+    <div id="movieModal" class="modal" aria-hidden="true" role="dialog" aria-label="Dettagli film">
       <div class="modal-content" role="document">
-        <button class="close" type="button" aria-label="Chiudi">×</button>
+        <button class="close" type="button" aria-label="Chiudi"><i class="fas fa-times"></i></button>
         <div id="movieDetails"></div>
       </div>
+    </div>
+
+    <!-- Loading Overlay -->
+    <div id="loadingOverlay" class="loading-overlay">
+      <div class="spinner">
+        <div class="bounce1"></div>
+        <div class="bounce2"></div>
+        <div class="bounce3"></div>
+      </div>
+      <p>Caricamento...</p>
     </div>
 
     <script src="js/tmdb.js"></script>
