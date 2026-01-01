@@ -1,11 +1,9 @@
-  <!-- index.html -->
 <!doctype html>
 <html lang="it">
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>I miei film</title>
-
   <link rel="stylesheet" href="css/style.css" />
   <link rel="preconnect" href="https://image.tmdb.org" />
 </head>
@@ -16,13 +14,14 @@
       <h1 class="logo">I miei film</h1>
 
       <div class="search">
-        <input id="searchInput" type="text" placeholder="Cerca un film..." autocomplete="off" />
+        <input id="searchInput" type="text" placeholder="Titoli, persone, generi" autocomplete="off" />
         <button id="searchBtn" type="button">Cerca</button>
       </div>
     </div>
 
     <nav class="nav container">
-      <button class="nav-btn active" data-category="trending" type="button">Trending</button>
+      <button class="nav-btn active" data-category="home" type="button">Home</button>
+      <button class="nav-btn" data-category="trending" type="button">Trending</button>
       <button class="nav-btn" data-category="popular" type="button">Popolari</button>
       <button class="nav-btn" data-category="top_rated" type="button">Top Rated</button>
     </nav>
@@ -30,10 +29,11 @@
 
   <main class="container">
     <div id="statusBar" class="status" aria-live="polite"></div>
-    <section id="moviesGrid" class="grid" aria-label="Lista film"></section>
+
+    <!-- qui non è più una “grid” sola: diventa un contenitore di righe -->
+    <section id="moviesGrid" class="rows" aria-label="Liste film"></section>
   </main>
 
-  <!-- MODAL -->
   <div id="movieModal" class="modal" aria-hidden="true" role="dialog" aria-label="Dettagli film">
     <div class="modal-content" role="document">
       <button class="close" type="button" aria-label="Chiudi">×</button>
