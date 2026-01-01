@@ -164,6 +164,9 @@ document.addEventListener('DOMContentLoaded', function () {
       const imdbId = movie.external_ids?.imdb_id;
       const imdbLink = imdbId ? `https://www.imdb.com/title/${imdbId}/` : null;
 
+      // ✅ PLAY link richiesto
+      const vixLink = `https://vixsrc.to/movie/${movie.id}`;
+
       detailsDiv.innerHTML = `
         <div class="movie-detail-header">
           <img src="${TMDB_IMAGE_BASE}${movie.poster_path}"
@@ -188,6 +191,9 @@ document.addEventListener('DOMContentLoaded', function () {
           <p>${escapeHtml(movie.overview || 'Nessuna descrizione disponibile.')}</p>
 
           <div class="actions">
+            <!-- ✅ Bottone PLAY che porta a vixsrc.to/movie/{tmdbId} -->
+            <a class="watch-btn play-btn" href="${vixLink}" target="_blank" rel="noopener">▶ Play</a>
+
             <a class="watch-btn" href="${tmdbLink}" target="_blank" rel="noopener">TMDB</a>
             ${imdbLink ? `<a class="watch-btn" href="${imdbLink}" target="_blank" rel="noopener">IMDb</a>` : ''}
             ${trailer ? `
