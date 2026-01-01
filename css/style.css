@@ -1495,3 +1495,125 @@ body.dark-theme{
   border-color: var(--stroke2);
   background: rgba(255,255,255,.09);
 }
+/* ===== Hero: contrasto + tipografia ===== */
+.hero{
+  min-height: 72vh;
+}
+
+.hero-backdrop{
+  filter: brightness(0.35) saturate(1.1);
+  transform: scale(1.02);
+}
+
+.hero-gradient{
+  background:
+    radial-gradient(800px 500px at 25% 35%, rgba(0,194,255,.15), transparent 60%),
+    linear-gradient(to right, rgba(0,0,0,.86) 0%, rgba(0,0,0,.45) 55%, rgba(0,0,0,.12) 100%);
+}
+
+.hero-content{
+  max-width: 980px;
+}
+
+#heroTitle{
+  font-size: clamp(38px, 4.2vw, 72px);
+  line-height: 1.02;
+  text-shadow: 0 12px 40px rgba(0,0,0,.55);
+}
+
+.hero-meta span{
+  background: rgba(255,255,255,.06);
+  border: 1px solid var(--stroke);
+  padding: 6px 10px;
+  border-radius: 999px;
+}
+
+.btn{
+  border-radius: 14px;
+  border: 1px solid var(--stroke);
+  background: rgba(255,255,255,.06);
+  backdrop-filter: blur(10px);
+  transition: transform .16s ease, background .16s ease, border-color .16s ease;
+}
+.btn:hover{
+  transform: translateY(-1px);
+  background: rgba(255,255,255,.10);
+  border-color: var(--stroke2);
+}
+
+.btn-play{
+  background: linear-gradient(135deg, rgba(0,194,255,.95), rgba(0,194,255,.55));
+  border-color: rgba(0,194,255,.45);
+  color: #061018;
+  font-weight: 800;
+}
+.btn-play:hover{ filter: brightness(1.05); }
+
+.btn-info{
+  background: rgba(255,255,255,.10);
+  border-color: rgba(255,255,255,.18);
+}
+/* ===== Poster cards: look & hover ===== */
+.scroller{
+  padding: 0 4%;
+  display: grid;
+  grid-auto-flow: column;
+  grid-auto-columns: 160px;
+  gap: 14px;
+  overflow-x: auto;
+  scroll-snap-type: x mandatory;
+  scroll-padding: 4%;
+}
+
+.scroller > *{
+  scroll-snap-align: start;
+}
+
+/* se le tue card hanno una classe tipo .movie-card / .card / .item,
+   aggiungi anche quelle qui sotto duplicandole */
+.movie-card, .card, .item{
+  position: relative;
+  border-radius: 16px;
+  overflow: hidden;
+  border: 1px solid var(--stroke);
+  background: rgba(255,255,255,.04);
+  box-shadow: 0 10px 24px rgba(0,0,0,.35);
+  transform: translateZ(0);
+  transition: transform .18s ease, box-shadow .18s ease, border-color .18s ease;
+}
+
+.movie-card:hover, .card:hover, .item:hover{
+  transform: translateY(-4px) scale(1.02);
+  border-color: rgba(0,194,255,.22);
+  box-shadow: 0 18px 40px rgba(0,0,0,.55);
+}
+
+/* overlay scuro in basso (tipo portali streaming) */
+.movie-card::after, .card::after, .item::after{
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(to top, rgba(0,0,0,.75), rgba(0,0,0,0) 55%);
+  opacity: .0;
+  transition: opacity .18s ease;
+  pointer-events: none;
+}
+.movie-card:hover::after, .card:hover::after, .item:hover::after{
+  opacity: 1;
+}
+/* ===== Scrollbar più elegante ===== */
+.scroller::-webkit-scrollbar{
+  height: 10px;
+}
+.scroller::-webkit-scrollbar-thumb{
+  background: rgba(255,255,255,.14);
+  border-radius: 999px;
+  border: 2px solid rgba(0,0,0,.25);
+}
+.scroller::-webkit-scrollbar-thumb:hover{
+  background: rgba(255,255,255,.22);
+}
+.scroller::-webkit-scrollbar-track{
+  background: rgba(255,255,255,.04);
+  border-radius: 999px;
+}
