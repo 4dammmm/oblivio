@@ -2,25 +2,26 @@
 <html lang="it">
 <head>
     <meta charset="UTF-8">
-    <title>Fullscreen Image</title>
+    <title>Fullscreen Image Responsive</title>
     <style>
         html, body {
             margin: 0;
             padding: 0;
             width: 100%;
             height: 100%;
-            overflow: hidden;
             background: black;
+            overflow: hidden;
         }
 
         img {
             width: 100vw;
             height: 100vh;
-            object-fit: cover; /* riempie tutto lo schermo */
+            object-fit: contain; /* NESSUN TAGLIO */
+            display: block;
         }
     </style>
 </head>
 <body>
-    <img src="https://i.ibb.co/wxdzQvv/DAHOOD.jpg" alt="Fullscreen">
+    <img src="https://i.ibb.co/wxdzQvv/DAHOOD.jpg" alt="Responsive Fullscreen">
 </body>
 </html>
